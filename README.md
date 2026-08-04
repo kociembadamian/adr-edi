@@ -2,7 +2,7 @@
 EDI ADR - cyfrowa automatyzacja dokumentów przewozowych. Niezależne repozytorium dla ceniących prywatność i urządzeń bez Google Play Services. Udostępnione pliki .apk to te same, bezpieczne i podpisane cyfrowo wersje, co w Google Play. Pobierz je bezpośrednio lub dodaj do Obtainium, by mieć auto-aktualizacje.
 
 # Informacje o aplikacji:
-[EDI ADR](https://edi.kocie.mba) to profesjonalne oprogramowanie klasy utility, dedykowane do cyfrowej automatyzacji procesów wystawiania dokumentacji przewozowej oraz zarządzania danymi zgodnie z wymogami Umowy ADR. Aplikacja przekształca złożone restrykcje działu 5.4 ADR w intuicyjny proces workflow, eliminując ryzyko błędów formalnych oraz dotkliwych sankcji administracyjnych wynikających z nieprawidłowego opisu towarów niebezpiecznych. 
+[ADR EDI](https://edi.kocie.mba) to profesjonalne oprogramowanie klasy utility, dedykowane do cyfrowej automatyzacji procesów wystawiania dokumentacji przewozowej oraz zarządzania danymi zgodnie z wymogami Umowy ADR. Aplikacja przekształca złożone restrykcje działu 5.4 ADR w intuicyjny proces workflow, eliminując ryzyko błędów formalnych oraz dotkliwych sankcji administracyjnych wynikających z nieprawidłowego opisu towarów niebezpiecznych. 
 
 Logika aplikacji została oparta na cyfrowej normalizacji przepisów Umowy ADR oraz Ustawie o przewozie towarów niebezpiecznych.
 
