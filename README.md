@@ -1,4 +1,4 @@
-# ADR EDI - tworzenie dokumentacji przewozowej zgodnej z Umową ADR oraz raportów do sprawozdań rocznych ADR.
+# ADR EDI - tworzenie dokumentacji przewozowej zgodnej z Umową ADR oraz raportów do sprawozdań rocznych ADR
 Niezależne, darmowe narzędzie wspierające pracę kierowców zawodowych, spedytorów oraz doradców DGSA w przewozie towarów niebezpiecznych.
 <p align="center">
   <a href="https://edi.kocie.mba" target="_blank">
