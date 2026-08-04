@@ -1,3 +1,13 @@
+<p align="center">
+  <a href="https://app.kocie.mba" target="_blank">
+    <img src="https://github.com/user-attachments/assets/b1072984-633a-470d-b950-b8cadb91df37" width="800" height="450" alt="ADR apka - app.kocie.mba">
+  </a>
+</p>
+
+<p align="center">
+  <b>Uruchom aplikację: <a href="https://edi.kocie.mba">edi.kocie.mba</a></b><br>
+  <sub><i>Aplikacja automatycznie rozpozna Twoje urządzenie (iOS, Android, Windows) i dopasuje odpowiednią wersję lub opcję instalacji PWA.</i></sub>
+</p>
 # repo adr-edi
 EDI ADR - cyfrowa automatyzacja dokumentów przewozowych. Niezależne repozytorium dla ceniących prywatność i urządzeń bez Google Play Services. Udostępnione pliki .apk to te same, bezpieczne i podpisane cyfrowo wersje, co w Google Play. Pobierz je bezpośrednio lub dodaj do Obtainium, by mieć auto-aktualizacje.
 
