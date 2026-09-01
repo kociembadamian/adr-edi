@@ -1,1 +1,273 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://kociembadamian.github.io/adr-edi/">
 
+    <title>ADR EDI | Generator dokumentacji przewozowej ADR i sprawozdań rocznych</title>
+    <meta name="description" content="ADR EDI – niezależny, darmowy generator dokumentacji przewozowej zgodnej z Umową ADR (dział 5.4) oraz raportów do sprawozdań rocznych, dla kierowców, spedytorów i doradców DGSA.">
+
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="kocie.mba">
+    <meta property="og:title" content="ADR EDI – generator dokumentacji przewozowej ADR">
+    <meta property="og:description" content="Cyfrowa automatyzacja dokumentów przewozowych i raportów rocznych zgodnie z Umową ADR.">
+    <meta property="og:image" content="https://github.com/user-attachments/assets/b1072984-633a-470d-b950-b8cadb91df37">
+    <meta property="og:url" content="https://kociembadamian.github.io/adr-edi/">
+    <meta name="twitter:card" content="summary_large_image">
+
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23017ffe'/%3E%3Ctext x='32' y='42' font-family='Arial, sans-serif' font-size='26' font-weight='900' fill='white' text-anchor='middle'%3E.mba%3C/text%3E%3C/svg%3E">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "SoftwareApplication",
+          "name": "ADR EDI",
+          "url": "https://edi.kocie.mba",
+          "applicationCategory": "BusinessApplication",
+          "operatingSystem": "Web, PWA, Android, Windows",
+          "author": { "@type": "Person", "name": "Damian Kociemba", "url": "https://kocie.mba/" },
+          "description": "Generator dokumentów przewozowych ADR (dział 5.4), raportowanie roczne towarów niebezpiecznych dużego ryzyka, kalkulator 1.1.3.6.",
+          "sameAs": ["https://github.com/kociembadamian/adr-edi"]
+        }
+      ]
+    }
+    </script>
+
+    <style>
+        :root {
+            --bg-color: #f3f5f9; --text-main: #10151f; --text-sub: #57626f; --accent: #017ffe;
+            --divider: rgba(16, 21, 31, 0.08); --glass-bg: rgba(255, 255, 255, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.7); --glass-shadow: rgba(31, 60, 110, 0.12);
+            --glass-highlight: rgba(255, 255, 255, 0.85); --btn-bg: rgba(255, 255, 255, 0.55);
+            --btn-border: rgba(255, 255, 255, 0.7); --chip-bg: rgba(16, 21, 31, 0.04); --chip-border: rgba(16, 21, 31, 0.08);
+        }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-color: #0b0d10; --text-main: #eef1f6; --text-sub: #9aa4b2; --accent: #4da3ff;
+                --divider: rgba(255, 255, 255, 0.08); --glass-bg: rgba(255, 255, 255, 0.06);
+                --glass-border: rgba(255, 255, 255, 0.1); --glass-shadow: rgba(0, 0, 0, 0.4);
+                --glass-highlight: rgba(255, 255, 255, 0.09); --btn-bg: rgba(255, 255, 255, 0.07);
+                --btn-border: rgba(255, 255, 255, 0.14); --chip-bg: rgba(255, 255, 255, 0.05); --chip-border: rgba(255, 255, 255, 0.09);
+            }
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html, body { height: 100%; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color); color: var(--text-main); min-height: 100vh;
+            display: flex; justify-content: center; padding: 20px 16px 50px;
+        }
+        .page { width: 100%; max-width: 680px; display: flex; flex-direction: column; gap: 34px; animation: fadeIn 0.7s ease-out; }
+        .glass-group {
+            background: var(--glass-bg); backdrop-filter: blur(20px) saturate(150%); -webkit-backdrop-filter: blur(20px) saturate(150%);
+            border: 1px solid var(--glass-border); border-radius: 22px;
+            box-shadow: 0 6px 24px var(--glass-shadow), inset 0 1px 0 var(--glass-highlight); overflow: hidden;
+        }
+        .topbar { display: flex; align-items: center; padding-bottom: 14px; border-bottom: 1px solid var(--divider); }
+        .back-link { font-size: 0.85rem; font-weight: 700; color: var(--text-sub); text-decoration: none; }
+        .back-link:hover { color: var(--accent); }
+        .hero { text-align: left; }
+        h1 { font-size: 1.85rem; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 0.4rem; }
+        .hero-role { font-size: 1.02rem; color: var(--accent); font-weight: 700; margin-bottom: 1rem; }
+        .hero-bio { font-size: 0.98rem; line-height: 1.68; color: var(--text-sub); margin-bottom: 1.6rem; }
+        .cta-row { display: flex; gap: 12px; flex-wrap: wrap; }
+        .product-cta { display: inline-block; font-size: 0.92rem; font-weight: 700; color: #fff; background: var(--accent); padding: 12px 22px; border-radius: 12px; text-decoration: none; }
+        .legal-links-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
+        .legal-pill { font-size: 0.8rem; font-weight: 600; color: var(--text-sub); background: var(--chip-bg); border: 1px solid var(--chip-border); padding: 8px 14px; border-radius: 20px; text-decoration: none; transition: all 0.2s ease; }
+        .legal-pill:hover { color: var(--accent); border-color: var(--accent); }
+        .screenshot-wrap { border-radius: 18px; overflow: hidden; box-shadow: 0 10px 30px var(--glass-shadow); border: 1px solid var(--divider); }
+        .screenshot-wrap img { display: block; width: 100%; height: auto; }
+        .section-title { font-size: 0.76rem; text-transform: uppercase; letter-spacing: 1.2px; color: var(--text-sub); font-weight: 700; margin-bottom: 12px; }
+        .group-item { padding: 22px; }
+        .group-item + .group-item { border-top: 1px solid var(--divider); }
+        .feature-name { font-size: 1.02rem; font-weight: 800; margin-bottom: 6px; }
+        .feature-desc { font-size: 0.92rem; line-height: 1.65; color: var(--text-sub); }
+        .tools-chip-row { display: flex; flex-wrap: wrap; gap: 8px; }
+        .chip { display: inline-flex; align-items: center; gap: 6px; font-size: 0.82rem; color: var(--text-sub); background: var(--chip-bg); border: 1px solid var(--chip-border); padding: 7px 14px; border-radius: 20px; }
+        .install-step { display: flex; gap: 14px; margin-bottom: 14px; }
+        .install-step:last-child { margin-bottom: 0; }
+        .install-num { flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%; background: var(--accent); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.85rem; }
+        .install-text { font-size: 0.9rem; line-height: 1.55; color: var(--text-sub); padding-top: 3px; }
+        .install-text code { background: var(--chip-bg); padding: 2px 6px; border-radius: 6px; font-size: 0.85em; }
+        .option-title { font-weight: 800; font-size: 0.98rem; margin-bottom: 14px; }
+        .download-icons { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+        .store-icon-link { -webkit-appearance: none; appearance: none; display: inline-flex; align-items: center; gap: 6px; padding: 7px 12px; border-radius: 10px; background: var(--btn-bg); border: 1px solid var(--btn-border); color: var(--text-main); text-decoration: none; cursor: pointer; transition: all 0.2s ease; font-family: inherit; font-size: 0.78rem; font-weight: 600; white-space: nowrap; }
+        .store-icon-link:hover { border-color: var(--accent); color: var(--accent); }
+        .store-icon-link svg { width: 15px; height: 15px; flex-shrink: 0; }
+        .mono-badge-sm { display: inline-flex; align-items: center; justify-content: center; width: 15px; height: 15px; border-radius: 4px; background: #C7000B; color: #fff; font-size: 8px; font-weight: 900; flex-shrink: 0; }
+        .store-tip-wrap { position: relative; display: inline-flex; }
+        .store-tip { position: absolute; bottom: calc(100% + 9px); left: 50%; transform: translateX(-50%) translateY(4px); background: var(--text-main); color: var(--bg-color); font-size: 0.72rem; font-weight: 600; line-height: 1.4; padding: 8px 12px; border-radius: 10px; width: max-content; max-width: 210px; text-align: center; box-shadow: 0 8px 22px rgba(0,0,0,0.22); opacity: 0; visibility: hidden; transition: opacity .15s ease, transform .15s ease; z-index: 20; pointer-events: none; }
+        .store-tip-wrap.tip-open .store-tip { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); pointer-events: auto; }
+        .legal-text { font-size: 0.85rem; line-height: 1.65; color: var(--text-sub); }
+        footer { padding-top: 20px; border-top: 1px solid var(--divider); font-size: 0.8rem; color: var(--text-sub); line-height: 1.7; }
+        footer a { color: var(--text-sub); text-decoration: none; }
+        footer a:hover { color: var(--accent); }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+        @media (max-width: 480px) { h1 { font-size: 1.5rem; } .cta-row { flex-direction: column; } }
+    </style>
+</head>
+<body>
+    <div class="page">
+
+        <div class="topbar">
+            <a href="https://kocie.mba" class="back-link">&larr; kocie.mba</a>
+        </div>
+
+        <div class="hero">
+            <h1>ADR EDI</h1>
+            <p class="hero-role">Generator dokumentacji przewozowej ADR &middot; Sprawozdania roczne &middot; Kalkulator 1.1.3.6</p>
+            <p class="hero-bio">
+                Niezależne, darmowe narzędzie wspierające pracę kierowców zawodowych, spedytorów oraz doradców DGSA w przewozie towarów niebezpiecznych. ADR EDI to profesjonalne oprogramowanie klasy utility, dedykowane do cyfrowej automatyzacji procesów wystawiania dokumentacji przewozowej oraz zarządzania danymi zgodnie z wymogami Umowy ADR. Aplikacja przekształca złożone restrykcje działu 5.4 ADR w intuicyjny proces workflow, eliminując ryzyko błędów formalnych oraz dotkliwych sankcji administracyjnych wynikających z nieprawidłowego opisu towarów niebezpiecznych. Logika aplikacji została oparta na cyfrowej normalizacji przepisów Umowy ADR oraz Ustawie o przewozie towarów niebezpiecznych.
+            </p>
+            <div class="cta-row">
+                <a href="https://edi.kocie.mba" class="product-cta">Uruchom aplikację &rarr;</a>
+            </div>
+            <p style="font-size:0.8rem; color:var(--text-sub); margin-top:10px;">
+                Aplikacja automatycznie rozpozna Twoje urządzenie (iOS, Android, Windows) i dopasuje odpowiednią wersję lub opcję instalacji PWA.
+            </p>
+        </div>
+
+        <div class="screenshot-wrap">
+            <a href="https://edi.kocie.mba" target="_blank">
+                <img src="https://github.com/user-attachments/assets/b1072984-633a-470d-b950-b8cadb91df37" width="800" height="450" alt="ADR EDI - edi.kocie.mba">
+            </a>
+        </div>
+
+        <section>
+            <div class="section-title">Najważniejsze funkcje</div>
+            <div class="glass-group">
+                <div class="group-item">
+                    <div class="feature-name">Inteligentny generator dokumentów przewozowych</div>
+                    <div class="feature-desc">
+                        System automatyzuje tworzenie prawidłowej nazwy przewozowej poprzez integrację z bazą danych API. Aplikacja samodzielnie implementuje logikę wymaganych dopisków i modyfikatorów, w tym: oznaczenie odpadów (5.4.1.1.3), obsługę próżnych nieoczyszczonych opakowań i cystern (5.4.1.1.6), a także automatyczne wykrywanie towarów zagrażających środowisku, stabilizowanych czy przewożonych w podwyższonej temperaturze.
+                    </div>
+                </div>
+                <div class="group-item">
+                    <div class="feature-name">Raportowanie roczne i detekcja towarów dużego ryzyka (HCDG)</div>
+                    <div class="feature-desc">
+                        Zaawansowane narzędzie analityczne agregujące dane przewozowe w cyklu rocznym. System automatycznie klasyfikuje towary według klas i jednostek miary (masa/objętość) oraz implementuje algorytm identyfikacji towarów dużego ryzyka, zgodnie z tabelą 1.10.3.1.2 ADR. Moduł rozpoznaje progi ilościowe w zależności od sposobu przewozu (sztuki przesyłki, luzem, cysterna), dostarczając gotowe dane do sprawozdania rocznego.
+                    </div>
+                </div>
+                <div class="group-item">
+                    <div class="feature-name">Zintegrowany kalkulator 1.1.3.6</div>
+                    <div class="feature-desc">
+                        Automatyczne wyliczanie punktów ADR dla każdej pozycji dokumentu. System mapuje towary do kategorii transportowych (0&ndash;4) i stosuje odpowiednie mnożniki, weryfikując dopuszczalność przewozu na wyłączeniu ilościowym w czasie rzeczywistym.
+                    </div>
+                </div>
+                <div class="group-item">
+                    <div class="feature-name">Relacyjna baza odbiorców i nadawców</div>
+                    <div class="feature-desc">
+                        Moduł zarządzania kontrahentami pozwalający na błyskawiczną personalizację dokumentów. Baza danych pozwala na przechowywanie pełnych danych teleadresowych, skracając proces wystawiania dokumentu do minimum.
+                    </div>
+                </div>
+                <div class="group-item">
+                    <div class="feature-name">Architektura PWA i lokalne bezpieczeństwo danych</div>
+                    <div class="feature-desc">
+                        Aplikacja wykorzystuje standardy Progressive Web App, co umożliwia pracę w trybie offline oraz błyskawiczny dostęp do archiwalnych dokumentów bez konieczności stałego połączenia z siecią. Wszystkie dane wrażliwe (klienci, historia przewozów) przechowywane są bezpiecznie w pamięci lokalnej urządzenia użytkownika.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <div class="section-title">Dla kogo jest ta aplikacja?</div>
+            <div class="tools-chip-row">
+                <span class="chip">Doradcy DGSA</span>
+                <span class="chip">Nadawcy i załadowcy towarów niebezpiecznych</span>
+                <span class="chip">Firmy transportowe i przewoźnicy</span>
+                <span class="chip">Spedytorzy i logistycy</span>
+                <span class="chip">Kierowcy zawodowi</span>
+            </div>
+        </section>
+
+        <section>
+            <div class="section-title">Jak zainstalować i aktualizować?</div>
+            <div class="glass-group">
+                <div class="group-item">
+                    <div class="option-title">Opcja 1 &middot; Obtainium (zalecane &mdash; automatyczne aktualizacje)</div>
+                    <div class="install-step"><div class="install-num">1</div><div class="install-text">Zainstaluj darmową aplikację OBTAINIUM.</div></div>
+                    <div class="install-step"><div class="install-num">2</div><div class="install-text">Wklej w niej link do repozytorium: <code>https://github.com/kociembadamian/adr-edi/</code></div></div>
+                    <div class="install-step"><div class="install-num">3</div><div class="install-text">Kliknij "Add" &mdash; od teraz urządzenie automatycznie wykryje nowe wersje i zaproponuje aktualizację.</div></div>
+                </div>
+                <div class="group-item">
+                    <div class="option-title">Opcja 2 &middot; bezpośrednie pobranie APK</div>
+                    <div class="install-step"><div class="install-num">1</div><div class="install-text">Przejdź do zakładki <a href="https://github.com/kociembadamian/adr-edi/releases/latest" style="color:var(--accent);">Releases</a>.</div></div>
+                    <div class="install-step"><div class="install-num">2</div><div class="install-text">Rozwiń sekcję ASSETS.</div></div>
+                    <div class="install-step"><div class="install-num">3</div><div class="install-text">Pobierz plik <code>app-release-signed.apk</code> i zainstaluj go na urządzeniu.</div></div>
+                    <div class="download-icons" style="margin-top:18px;">
+                        <a href="https://play.google.com/store/apps/details?id=mba.kocie.edi.twa" target="_blank" rel="noopener" class="store-icon-link">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 3.6c0-.9 1-1.4 1.7-.9l13.8 8.4c.7.4.7 1.4 0 1.8L5.7 21.3c-.7.5-1.7 0-1.7-.9V3.6Z"/></svg>
+                            <span>Google Play</span>
+                        </a>
+                        <a href="https://apps.microsoft.com/detail/9nx38rbpklhb" target="_blank" rel="noopener" class="store-icon-link">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="8" height="8" rx="1"></rect><rect x="13" y="3" width="8" height="8" rx="1"></rect><rect x="3" y="13" width="8" height="8" rx="1"></rect><rect x="13" y="13" width="8" height="8" rx="1"></rect></svg>
+                            <span>Microsoft Store</span>
+                        </a>
+                        <span class="store-tip-wrap">
+                            <span class="store-icon-link" role="button" tabindex="0" onclick="toggleStoreTip(this)" onkeydown="handleStoreTipKey(event, this)">
+                                <span class="mono-badge-sm">AG</span><span>AppGallery</span>
+                            </span>
+                            <span class="store-tip">Wyszukaj "ADR EDI" bezpośrednio w AppGallery.</span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <div class="section-title">Informacja prawna / zrzeczenie się odpowiedzialności</div>
+            <div class="glass-group">
+                <div class="group-item">
+                    <p class="legal-text">
+                        Aplikacja nie jest oficjalnym produktem rządowym i nie reprezentuje żadnego organu państwowego. Dane i obliczenia w niej zawarte mają charakter pomocniczy i informacyjny. Nie zwalniają one użytkownika z obowiązku znajomości przepisów Umowy ADR oraz konsultacji z certyfikowanym doradcą ds. bezpieczeństwa. Twórcy aplikacji nie ponoszą odpowiedzialności za błędy interpretacyjne, szkody lub kary wynikające z użytkowania oprogramowania. Oficjalne przepisy ADR dostępne są na stronie UNECE.
+                    </p>
+                    <div class="legal-links-row">
+                        <a href="https://pl.kocie.mba/regulamin.html" class="legal-pill">Regulamin</a>
+                        <a href="https://pl.kocie.mba/rodo.html" class="legal-pill">Polityka prywatności (RODO)</a>
+                        <a href="https://pl.kocie.mba/cookies.html" class="legal-pill">Cookies</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <div class="section-title">©️ Licencja i prawa autorskie</div>
+            <p class="legal-text">
+                Wszelkie prawa zastrzeżone. Aplikacja udostępniana jest w repozytorium wyłącznie w celu pobrania i osobistej instalacji. Kopiowanie, modyfikowanie, dekompilacja oraz redystrybucja aplikacji w zmodyfikowanej formie lub pod inną nazwą są surowo zabronione. Udostępnione pliki .apk to te same, bezpieczne i podpisane cyfrowo wersje, co w Google Play &mdash; niezależne repozytorium dla ceniących prywatność i urządzeń bez Google Play Services.
+            </p>
+        </section>
+
+        <footer>
+            Kontakt: <a href="mailto:damian@kocie.mba">damian@kocie.mba</a><br>
+            <a href="https://github.com/kociembadamian/adr-edi" target="_blank" rel="noopener">github.com/kociembadamian/adr-edi</a>
+            <br><br>
+            <strong>DGSA drs. D. Kociemba</strong> &middot; Spalaan 6, 5628 ZG Eindhoven (NL) &middot; KvK: 95907130 &middot; BTW/VAT: NL005178103B20
+            <br><br>
+            © 2025 - ∞ <a href="https://kocie.mba">kocie.mba</a> &middot; część noviqa.group
+        </footer>
+
+    </div>
+
+    <script>
+        function toggleStoreTip(btn) {
+            var wrap = btn.closest('.store-tip-wrap');
+            if (!wrap) return;
+            var wasOpen = wrap.classList.contains('tip-open');
+            document.querySelectorAll('.store-tip-wrap.tip-open').forEach(function (el) { el.classList.remove('tip-open'); });
+            if (!wasOpen) wrap.classList.add('tip-open');
+        }
+        function handleStoreTipKey(e, el) {
+            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleStoreTip(el); }
+        }
+        document.addEventListener('click', function (e) {
+            if (!e.target.closest('.store-tip-wrap')) {
+                document.querySelectorAll('.store-tip-wrap.tip-open').forEach(function (el) { el.classList.remove('tip-open'); });
+            }
+        });
+    </script>
+</body>
+</html>
